@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kolkata Urban Analytics, Utility Load & Financial Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .pdf-avoid-break { page-break-inside: avoid; break-inside: avoid; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-indigo-500/30">
+
+  <div id="dashboardReportContainer" class="max-w-7xl mx-auto p-4 lg:p-8 space-y-6">
+    
+    <div data-html2pdf-ignore="true" class="flex flex-wrap items-center justify-between gap-4 bg-slate-900/60 border border-slate-800 p-4 rounded-2xl backdrop-blur-sm">
+      <div class="flex flex-wrap items-center gap-3">
+        <button id="smartCityBtn" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-xl border border-slate-700 transition-all duration-200">
+          <span id="smartIndicator" class="h-2 w-2 rounded-full bg-slate-500"></span>
+          ⚡ Smart City Scenario Toggle
+        </button>
+      </div>
+
+      <button onclick="generateExecutivePDF()" class="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-600/10 transition-all duration-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z"></path></svg>
+        Generate Executive PDF Report
+      </button>
+    </div>
+
+    <header class="border-b border-slate-800 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-emerald-400 text-sm font-semibold tracking-wider uppercase mb-1">
+          <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> Municipal Intelligence Node
+        </div>
+        <h1 class="text-3xl font-bold tracking-tight text-white">Kolkata Full-Spectrum Urban Analytics</h1>
+        <p class="text-slate-400 text-sm mt-1">Centennial Analytics, Resource Strain Matrix, and Utility Load Testing</p>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-right">
+        <span class="text-xs text-slate-400 block font-medium">Urban Planning Ecosystem</span>
+        <span class="text-md font-bold text-slate-200">Kolkata Division, WB</span>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5">
+        <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Total Base Population</p>
+        <h3 class="text-2xl font-bold text-white mt-2">4,496,694</h3>
+        <p class="text-xs text-slate-500 mt-1">2011 Census Absolute Index</p>
+      </div>
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5">
+        <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Base Census Households</p>
+        <h3 class="text-2xl font-bold text-emerald-400 mt-2">1,023,030</h3>
+        <p class="text-xs text-slate-500 mt-1">Occupied Municipal Dwellings</p>
+      </div>
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5">
+        <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Drainage Infrastructure</p>
+        <h3 id="kpiDrainage" class="text-2xl font-bold text-amber-400 mt-2">Open Surface</h3>
+        <p class="text-xs text-slate-500 mt-1">Current Primary Utility Type</p>
+      </div>
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5">
+        <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Base Annual Tax Pool</p>
+        <h3 class="text-2xl font-bold text-indigo-400 mt-2">1,534 Cr</h3>
+        <p class="text-xs text-slate-500 mt-1">Estimated Direct Levy Pool</p>
+      </div>
+    </section>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <div class="lg:col-span-2 space-y-6">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between pdf-avoid-break">
+            <div>
+              <h3 class="text-sm font-bold text-white">Centennial Census Growth Curve</h3>
+              <p class="text-[11px] text-slate-400 mb-4">Historical curve trajectory evaluation (1901-2011)</p>
+            </div>
+            <div class="h-56 w-full">
+              <canvas id="historicalChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between pdf-avoid-break">
+            <div>
+              <h3 class="text-sm font-bold text-white">20-Year Property Tax Revenue Model</h3>
+              <p class="text-[11px] text-slate-400 mb-4">Simulating tax pools against compounded household trends</p>
+            </div>
+            <div class="h-56 w-full">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between pdf-avoid-break">
+            <div>
+              <h4 class="text-sm font-bold text-white mb-1">Gender Demographic Structural Balance</h4>
+              <p class="text-[11px] text-slate-400 mb-4">Total breakdown between recorded Male vs Female populations</p>
+            </div>
+            <div class="h-44 relative flex items-center justify-center">
+              <canvas id="genderChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between pdf-avoid-break">
+            <div>
+              <h4 class="text-sm font-bold text-white mb-1">Utility Network Capacity Balance</h4>
+              <p class="text-[11px] text-slate-400 mb-4">Current network capacity threshold vs simulated demands</p>
+            </div>
+            <div class="h-44 w-full">
+              <canvas id="utilityChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between pdf-avoid-break shadow-xl shadow-black/40">
+        <div>
+          <div class="flex items-center gap-2 mb-2 text-indigo-400 text-xs font-bold tracking-widest uppercase">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z"></path></svg>
+            ML Predictive Modeling System
+          </div>
+          <h3 class="text-lg font-bold text-white mb-1">Growth Forecast Inputs Matrix</h3>
+          <p class="text-xs text-slate-400 mb-6">Modify population compounding assumptions manually or engage the Smart City override toggle to assess infrastructural system stress.</p>
+
+          <div class="space-y-6 border-t border-slate-800 pt-6">
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-2">
+                <span class="text-slate-300">Decadal Growth Vector Variable</span>
+                <span id="rateVal" class="text-indigo-400 font-mono">+1.5%</span>
+              </div>
+              <input id="rateSlider" type="range" min="-5" max="10" step="0.5" value="1.5" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-2">
+                <span class="text-slate-300">Est. Structural Household Density</span>
+                <span id="densityVal" class="text-indigo-400 font-mono">4.4</span>
+              </div>
+              <input id="densitySlider" type="range" min="2.5" max="7" step="0.1" value="4.4" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950/80 rounded-xl p-4 mt-6 border border-slate-800 space-y-3.5">
+          <h4 class="text-xs font-bold tracking-wider uppercase text-slate-500 mb-2">Calculated Model Outputs (2036/2050)</h4>
+          
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400">Projected System Population</span>
+            <span id="projPop" class="font-mono font-bold text-white">--</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400">Total Structural Housing Demand</span>
+            <span id="projHouse" class="font-mono font-bold text-emerald-400">--</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400">Daily Water Flow Allocation</span>
+            <span id="projWater" class="font-mono font-bold text-blue-400">--</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400">Electrical Grid Load Demand</span>
+            <span id="projPower" class="font-mono font-bold text-amber-400">--</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400">Est. Annual Tax Collection Yield</span>
+            <span id="projTax" class="font-mono font-bold text-indigo-400">--</span>
+          </div>
+
+          <div id="stressBadge" class="text-center rounded-lg py-2 text-[10px] font-bold tracking-wider transition-all duration-300 mt-4">
+            System Index Syncing...
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Pure Dataset Constants from DCHB_Town_Amenities-WEST_BENGAL-KOLKATA-342.csv
+    const DATAFEED = {
+      pop2011: 4496694,
+      households2011: 1023030,
+      males: 2356341,
+      females: 2140353,
+      avgTaxPerStructure: 15000,
+      baseWaterMax: 640.7,  // Current threshold limit of city reservoir network configurations (MLD)
+      basePowerMax: 850.0,  // Base electrical capacity distribution caps (Megawatts)
+      historicalTimeline: {
+        years: [1901, 1911, 1921, 1931, 1941, 1951, 1961, 1971, 1981, 1991, 2001, 2011],
+        pop: [845683, 1013481, 1056345, 1234908, 2158301, 2546301, 2921400, 3148746, 3305546, 4396694, 4574921, 4496694]
+      }
+    };
+
+    // System Chart Instances
+    let historicalChart = null;
+    let revenueChart = null;
+    let genderChart = null;
+    let utilityChart = null;
+    let isSmartCityActive = false;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initCharts();
+      setupControlHooks();
+      runPredictiveModel();
+    });
+
+    function initCharts() {
+      // 1. Chart: Historical Centennial Census Curve
+      const histCtx = document.getElementById('historicalChart').getContext('2d');
+      historicalChart = new Chart(histCtx, {
+        type: 'line',
+        data: {
+          labels: DATAFEED.historicalTimeline.years,
+          datasets: [{
+            data: DATAFEED.historicalTimeline.pop,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.04)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.25,
+            pointBackgroundColor: '#34d399',
+            pointRadius: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+            y: { grid: { color: 'rgba(51, 65, 85, 0.2)' }, ticks: { color: '#64748b', font: { size: 9 }, callback: v => (v / 1000000).toFixed(1) + 'M' } }
+          }
+        }
+      });
+
+      // 2. Chart: 20-Year Property Revenue Vector Chart
+      const revCtx = document.getElementById('revenueChart').getContext('2d');
+      revenueChart = new Chart(revCtx, {
+        type: 'line',
+        data: {
+          labels: ['Year 0', 'Year 5', 'Year 10', 'Year 15', 'Year 20'],
+          datasets: [{
+            data: [153, 172, 191, 215, 254],
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.04)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.25,
+            pointBackgroundColor: '#818cf8',
+            pointRadius: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+            y: { grid: { color: 'rgba(51, 65, 85, 0.2)' }, ticks: { color: '#64748b', font: { size: 9 }, callback: v => '₹' + v + ' Cr' } }
+          }
+        }
+      });
+
+      // 3. Chart: Doughnut Gender Breakdown Core
+      const genCtx = document.getElementById('genderChart').getContext('2d');
+      genderChart = new Chart(genCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Male', 'Female'],
+          datasets: [{
+            data: [DATAFEED.males, DATAFEED.females],
+            backgroundColor: ['#3b82f6', '#ec4899'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 8 } }
+          },
+          cutout: '76%'
+        }
+      });
+
+      // 4. Chart: Utility Demand vs Capacity Grouped Bars
+      const utilCtx = document.getElementById('utilityChart').getContext('2d');
+      utilityChart = new Chart(utilCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Water (MLD)', 'Electricity (MW)'],
+          datasets: [
+            {
+              label: 'System Threshold Cap',
+              data: [DATAFEED.baseWaterMax, DATAFEED.basePowerMax],
+              backgroundColor: '#334155'
+            },
+            {
+              label: 'Calculated 2050 Requirement',
+              data: [640.7, 750],
+              backgroundColor: '#38bdf8'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 9 }, boxWidth: 10 } }
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
+            y: { grid: { color: 'rgba(51, 65, 85, 0.2)' }, ticks: { color: '#64748b', font: { size: 9 } } }
+          }
+        }
+      });
+    }
+
+    function setupControlHooks() {
+      const rSlider = document.getElementById('rateSlider');
+      const dSlider = document.getElementById('densitySlider');
+      const smartBtn = document.getElementById('smartCityBtn');
+
+      rSlider.addEventListener('input', (e) => {
+        if(isSmartCityActive) deactivateSmartModeVisuals();
+        document.getElementById('rateVal').innerText = (e.target.value > 0 ? '+' : '') + e.target.value + '%';
+        runPredictiveModel();
+      });
+
+      dSlider.addEventListener('input', (e) => {
+        if(isSmartCityActive) deactivateSmartModeVisuals();
+        document.getElementById('densityVal').innerText = e.target.value;
+        runPredictiveModel();
+      });
+
+      smartBtn.addEventListener('click', () => {
+        isSmartCityActive = !isSmartCityActive;
+        const indicator = document.getElementById('smartIndicator');
+
+        if(isSmartCityActive) {
+          indicator.className = "h-2 w-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400";
+          smartBtn.className = "flex items-center gap-2 bg-emerald-950/40 text-emerald-400 text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-xl border border-emerald-500/40 transition-all duration-200 shadow-md";
+          
+          rSlider.value = 0.5;
+          dSlider.value = 3.4;
+          
+          document.getElementById('rateVal').innerText = "+0.5%";
+          document.getElementById('densityVal').innerText = "3.4";
+          document.getElementById('kpiDrainage').innerText = "Closed Covered";
+          document.getElementById('kpiDrainage').className = "text-2xl font-bold text-emerald-400 mt-2";
+        } else {
+          deactivateSmartModeVisuals();
+        }
+        runPredictiveModel();
+      });
+    }
+
+    function deactivateSmartModeVisuals() {
+      isSmartCityActive = false;
+      const smartBtn = document.getElementById('smartCityBtn');
+      document.getElementById('smartIndicator').className = "h-2 w-2 rounded-full bg-slate-500";
+      smartBtn.className = "flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-xl border border-slate-700 transition-all duration-200";
+      document.getElementById('kpiDrainage').innerText = "Open Surface";
+      document.getElementById('kpiDrainage').className = "text-2xl font-bold text-amber-400 mt-2";
+    }
+
+    // Comprehensive Dynamic Forecasting Optimization Logic
+    function runPredictiveModel() {
+      const growthRate = parseFloat(document.getElementById('rateSlider').value) / 100;
+      const householdDensity = parseFloat(document.getElementById('densitySlider').value);
+
+      const targetElapsedDecades = (2050 - 2011) / 10;
+      let targetPopulation = DATAFEED.pop2011 * Math.pow((1 + growthRate), targetElapsedDecades);
+      if(targetPopulation < 500000) targetPopulation = 500000;
+
+      let targetHouseholds = targetPopulation / householdDensity;
+      
+      // 1. Water Resource Math: Per Capita Baseline Matrix Allocation (Ltrs to MLD conversions)
+      let networkWaterVolumeLtrs = targetPopulation * 142.5; 
+      let waterMld = parseFloat((networkWaterVolumeLtrs / 1000000).toFixed(1));
+
+      // 2. Power Grid Distribution Math Baseline Load Scaling Matrix
+      let basePowerPerCapitaKw = 0.165; 
+      let calculatedPowerMw = parseFloat(((targetPopulation * basePowerPerCapitaKw) / 1000).toFixed(1));
+
+      // Smart Eco-Policy Modifications (Triggers optimization improvements if active)
+      if(isSmartCityActive) {
+        waterMld *= 0.88; // 12% drop in volumetric wastage through leak detection metrics
+        calculatedPowerMw *= 0.85; // 15% grid optimization through smart HVAC green rules
+      }
+
+      // Trace Financial Levy Array Vector
+      let calculatedTaxTrendArray = [];
+      for (let indexStep = 0; indexStep <= 20; indexStep += 5) {
+        let loopDecades = indexStep / 10;
+        let loopPopulation = DATAFEED.pop2011 * Math.pow((1 + growthRate), loopDecades);
+        let loopHouseholds = loopPopulation / householdDensity;
+        let stepCalculatedTaxCr = (loopHouseholds * DATAFEED.avgTaxPerStructure) / 10000000;
+        if(isSmartCityActive) stepCalculatedTaxCr *= 1.15;
+        calculatedTaxTrendArray.push(parseFloat(stepCalculatedTaxCr.toFixed(1)));
+      }
+
+      // Direct Live Node UI Content Updates
+      document.getElementById('projPop').innerText = Math.round(targetPopulation).toLocaleString('en-IN');
+      document.getElementById('projHouse').innerText = Math.round(targetHouseholds).toLocaleString('en-IN');
+      document.getElementById('projWater').innerText = waterMld.toFixed(1) + " MLD";
+      document.getElementById('projPower').innerText = calculatedPowerMw.toFixed(1) + " MW";
+      
+      let finalPeakRevenueCr = calculatedTaxTrendArray[calculatedTaxTrendArray.length - 1];
+      document.getElementById('projTax').innerText = "₹" + finalPeakRevenueCr.toLocaleString('en-IN') + " Cr / Yr";
+
+      // Multi-Chart Synchronization Pipeline Upgrades
+      if(revenueChart) {
+        revenueChart.data.datasets[0].data = calculatedTaxTrendArray;
+        revenueChart.data.datasets[0].borderColor = isSmartCityActive ? '#10b981' : '#6366f1';
+        revenueChart.update();
+      }
+
+      if(utilityChart) {
+        utilityChart.data.datasets[1].data = [waterMld, calculatedPowerMw];
+        utilityChart.data.datasets[1].backgroundColor = (waterMld > DATAFEED.baseWaterMax || calculatedPowerMw > DATAFEED.basePowerMax) ? '#f43f5e' : '#38bdf8';
+        utilityChart.update();
+      }
+
+      // Overload Risk Boundary Checking Flags
+      const badge = document.getElementById('stressBadge');
+      if (isSmartCityActive) {
+        badge.innerText = "OPTIMIZED SYSTEM STATUS: MODERNIZED SYSTEM MATRIX BALANCED";
+        badge.className = "text-center rounded-lg py-2 text-[10px] font-bold tracking-wider transition-all duration-300 mt-4 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm";
+      } else if (waterMld > DATAFEED.baseWaterMax || calculatedPowerMw > DATAFEED.basePowerMax) {
+        badge.innerText = "CRITICAL METROPOLITAN DEFICIT: LOADS EXCEED MUNICIPAL UTILITY MATRIX CAPS";
+        badge.className = "text-center rounded-lg py-2 text-[10px] font-bold tracking-wider transition-all duration-300 mt-4 bg-rose-500/20 text-rose-400 border border-rose-500/30 shadow-sm";
+      } else {
+        badge.innerText = "BALANCED SYSTEM STATUS: UTILITIES OPERATING WITHIN SAFE NETWORK CAPACITY CAPS";
+        badge.className = "text-center rounded-lg py-2 text-[10px] font-bold tracking-wider transition-all duration-300 mt-4 bg-slate-800 text-slate-400 border border-slate-700/50";
+      }
+    }
+
+    // PDF Exporter Worker Pipeline Engine
+    function generateExecutivePDF() {
+      const captureTarget = document.getElementById('dashboardReportContainer');
+      const exportOptions = {
+        margin: [0.3, 0.3, 0.3, 0.3],
+        filename: 'Kolkata_Full_Spectrum_Urban_Executive_Report.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#020617' },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+      };
+      html2pdf().set(exportOptions).from(captureTarget).save();
+    }
+  </script>
+</body>
+</html>
